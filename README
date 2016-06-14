@@ -1,6 +1,8 @@
 # Outbound Privacy Test
 This app is designed to simulate a heavy load on your privacy API endpoint similar to how Outbound processes broadcast campaigns. While processing broadcasts, your privacy endpoint will be required to load a lot of users information and return it to Outbound very fast.
 
+Note that this is not an exact simulation of an Outbound broadcast campaign. In terms of time, your broadcast can take a lot longer to run overall due to several factors that can not be replicated in this test.
+
 Tests require a file containing a list of URLs to make requests to.
 
 ## Test Mode
