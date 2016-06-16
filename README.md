@@ -10,11 +10,11 @@ There are 2 installation options. The first is downloading one of the prebuilt b
 
 | Platform | Link |
 |:----|:-------:|
-| Mac OS X  | [Link]()  |
-| Window/amd6 | [Link]() |
-| Linux/amd64 | [Link]() |
+| Mac OS X  | [Link](https://github.com/outboundio/privacy-api-test/releases/download/1.0.0/privacy-darwin-amd64.tar.gz)  |
+| Window/amd6 | [Link](https://github.com/outboundio/privacy-api-test/releases/download/1.0.0/privacy-windows-amd64.tar.gz) |
+| Linux/amd64 | [Link](https://github.com/outboundio/privacy-api-test/releases/download/1.0.0/privacy-linux-amd64.tar.gz) |
 
-Alternatively, if you have [Go 1.6+]() installed on your system, you can simply run `go get` to download and install the library.
+Alternatively, if you have [Go 1.6+](https://golang.org/dl/) installed on your system, you can simply run `go get` to download and install the library.
 
     go get -u github.com/outboundio/privacy-api-test
 
