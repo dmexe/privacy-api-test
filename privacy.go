@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"runtime"
@@ -120,6 +121,18 @@ func main() {
 func processIds() {
 	defer workerWg.Done()
 
+	trans := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},
+		Dial: (&net.Dialer{
+			KeepAlive: 30 * time.Second,
+		}).Dial,
+		DisableKeepAlives: false,
+	}
+	client := &http.Client{
+		Transport: trans,
+		Timeout:   timeout,
+	}
+
 	var idx int
 	for url := range urlChan {
 		idx++
@@ -131,15 +144,15 @@ func processIds() {
 			reqWg.Add(1)
 			go func(url string) {
 				defer reqWg.Done()
-				makeRequest(url)
+				makeRequest(client, url)
 			}(url)
 		} else {
-			makeRequest(url)
+			makeRequest(client, url)
 		}
 	}
 }
 
-func makeRequest(url string) {
+func makeRequest(client *http.Client, url string) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		if verbose {
@@ -150,18 +163,14 @@ func makeRequest(url string) {
 
 	req.Header.Add("Content-type", "application/json")
 
-	trans := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: false},
-	}
-	client := &http.Client{
-		Transport: trans,
-		Timeout:   timeout,
-	}
-
 	st := time.Now().UTC()
 	resp, err := client.Do(req)
 	atomic.AddInt64(&requestTime, time.Since(st).Nanoseconds())
 	atomic.AddInt32(&reqCount, 1)
+
+	if resp != nil && resp.Body != nil {
+		resp.Body.Close()
+	}
 
 	if err != nil {
 		atomic.AddInt32(&connectErrors, 1)
